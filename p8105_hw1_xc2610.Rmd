@@ -9,27 +9,51 @@ output: github_document
 library(tidyverse)
 ```
 
-The purpose of this file is to present a couple of basic plots using `ggplot`.
-
-First we create a dataframe containing variables for our plots.
+Problem 1
 
 ```{r df_create}
-set.seed(1234)
+set.seed(5)
 
-plot_df = tibble(
-  x = rnorm(1000, sd = .5),
-  y = 1 + 2 * x + rnorm(1000)
+random_df = tibble(
+  val = rnorm(10, sd = .5),
+  vec_logical = c(TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE),
+  vec_char = c("A", "B", "C", "D", "E", "F", "G", "H", "I", "J"),
+  vec_factor = factor(c("pro", "con", "non", "non", "con", "pro", "con", "non", "pro", "non"))
 )
+
+## show(random_df)
+
+random_df$vec_logical <- ifelse(random_df$val < 0, FALSE, TRUE)
+
+## show(random_df)
 ```
 
-First we show a histogram of the `x` variable.
 
-```{r x_hist}
-ggplot(plot_df, aes(x = x)) + geom_histogram()
+```{r mean}
+mean(pull(random_df, val))
+mean(pull(random_df, vec_logical))
+mean(pull(random_df, vec_char))
+mean(pull(random_df, vec_factor))
 ```
+ 
 
-Next we show a scatterplot of `y` vs `x`. 
-
-```{r yx_scatter}
-ggplot(plot_df, aes(x = x, y = y)) + geom_point()
+```{r as.numeric}
+as.numeric(pull(random_df, vec_factor))
+```
+Problem 2
+```{r penguins}
+data("penguins", package = "palmerpenguins")
+names(penguins)
+#view(penguins)
+head(penguins)
+nrow(penguins)
+ncol(penguins)
+## skimr::skim(penguins)
+penguins$flipper_length_mm [is.na(penguins$flipper_length_mm)] <- 0
+head(penguins)
+mean(pull(penguins, flipper_length_mm))
+```
+```{r scatter}
+ggplot(penguins, aes(x = bill_length_mm, y = flipper_length_mm, color = species)) + geom_point()
+## ggsave("scatter_HW1_P2.pdf", height = 4, width = 6)
 ```
