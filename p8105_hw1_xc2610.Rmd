@@ -11,49 +11,66 @@ library(tidyverse)
 
 Problem 1
 
+Create the dataframe accordingly:
 ```{r df_create}
 set.seed(5)
 
 random_df = tibble(
-  val = rnorm(10, sd = .5),
-  vec_logical = c(TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE),
-  vec_char = c("A", "B", "C", "D", "E", "F", "G", "H", "I", "J"),
-  vec_factor = factor(c("pro", "con", "non", "non", "con", "pro", "con", "non", "pro", "non"))
+  val = rnorm(10, sd = .5), ## random sample of size 10
+  vec_logical = c(TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE), ## initialize the logical factor as all true
+  vec_char = c("A", "B", "C", "D", "E", "F", "G", "H", "I", "J"), ## character vector of length 10
+  vec_factor = factor(c("pro", "con", "non", "non", "con", "pro", "con", "non", "pro", "non")) ## factor vector of length 10 with 3 different levels
 )
 
 ## show(random_df)
 
-random_df$vec_logical <- ifelse(random_df$val < 0, FALSE, TRUE)
+random_df$vec_logical <- ifelse(random_df$val < 0, FALSE, TRUE) ## edit the logical vector according to positive or not of each sample value
 
 ## show(random_df)
 ```
 
-
+Then try to get the mean of each variables, mean only works on the sample value and logical factor:
 ```{r mean}
-mean(pull(random_df, val))
-mean(pull(random_df, vec_logical))
-mean(pull(random_df, vec_char))
-mean(pull(random_df, vec_factor))
+mean(pull(random_df, val)) ## try get mean of values
+mean(pull(random_df, vec_logical)) ## try get mean of logical factors
+mean(pull(random_df, vec_char)) ## try get mean of characters
+mean(pull(random_df, vec_factor)) ## try get mean of factors
 ```
- 
+ as.numertic works on vec_logical and vec_factor but not vec_char. Booleans are considered as 1s and 0s so the mean of a list of booleans can be calculated. Characters can not be shown as numeric values so we can't calculate its mean. We can't get the mean of factors although it can be shown as numertic values might because each facotr name doesn't map to some particular (like 0 is always False 1 is always true). 
 
 ```{r as.numeric}
+## convert variables to numeric
+as.numeric(pull(random_df, vec_logical))
+as.numeric(pull(random_df, vec_char))
 as.numeric(pull(random_df, vec_factor))
-```
+``` 
 Problem 2
+
+  This dataset contains 8 variables: "species", "island", "bill_length_mm", bill_depth_mm", "flipper_length_mm", "body_mass_g", "sex" and "year". "species", "island", "gender" and "year" are categorical, while "bill_length_mm", bill_depth_mm", "flipper_length_mm" and "body_mass_g" are numerical. The data frame contains 344 rols and 8 columns. 
+  
+  The mean flipper lengths of penguins according to this data is 199.7471mm.
 ```{r penguins}
+## get the penguins dataset
 data("penguins", package = "palmerpenguins")
+
+## check information about this dataset
 names(penguins)
-#view(penguins)
+## view(penguins)
 head(penguins)
 nrow(penguins)
 ncol(penguins)
 ## skimr::skim(penguins)
-penguins$flipper_length_mm [is.na(penguins$flipper_length_mm)] <- 0
-head(penguins)
-mean(pull(penguins, flipper_length_mm))
 ```
+
+```{r mean_flipper_length}
+penguins$flipper_length_mm [is.na(penguins$flipper_length_mm)] <- 0 ## rewite all NA's as 0
+## head(penguins)
+mean(pull(penguins, flipper_length_mm)) ## calculate the mean length
+```
+
+Make a scatterplot of flipperlength vs billlength color points and assign different color to each species:
 ```{r scatter}
-ggplot(penguins, aes(x = bill_length_mm, y = flipper_length_mm, color = species)) + geom_point()
+ggplot(penguins, aes(x = bill_length_mm, y = flipper_length_mm, color = species)) + geom_point() ## create a scatter plot according to penguin species
+## save the scatter plot to local
 ## ggsave("scatter_HW1_P2.pdf", height = 4, width = 6)
 ```
